@@ -1,0 +1,73 @@
+{
+  "name": "buffer-codec-bytewise",
+  "version": "0.9.0",
+  "description": "String serialization of arbitrarily complex structures that sort bytewise.",
+  "homepage": "https://github.com/snowyu/node-buffer-codec-bytewise",
+  "main": "./index",
+  "files": [
+    "README.md",
+    "LICENSE-MIT",
+    "*.js",
+    "test",
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+    "abstract-object": ">=1.5.0",
+    "buffer-codec": ">=1.5.2"
+  },
+  "devDependencies": {
+    "chai": "~1.10.0",
+    "coffee-script": "~1.8.0",
+    "connect-livereload": "*",
+    "grunt": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-mocha-test": "~0.12.4",
+    "grunt-newer": "*",
+    "grunt-release": "*",
+    "grunt-rev": "*",
+    "grunt-saucelabs": "*",
+    "grunt-usemin": "*",
+    "mocha": "~2.0.1",
+    "powerbuild": "latest",
+    "sinon": "~1.12.2",
+    "sinon-chai": "~2.6.0",
+    "source-map-support": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snowyu/node-buffer-codec-bytewise"
+  },
+  "keywords": [
+    "buffer",
+    "codec",
+    "encode",
+    "decode",
+    "serialization",
+    "serialize",
+    "deserialize",
+    "bytewise",
+    "lexicographic",
+    "sort",
+    "index",
+    "object",
+    "class"
+  ],
+  "author": {
+    "name": "Riceball LEE",
+    "email": "snowyu.lee@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/snowyu/node-buffer-codec-bytewise/issues"
+  }
+}
