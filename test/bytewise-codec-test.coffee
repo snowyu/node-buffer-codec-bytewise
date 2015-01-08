@@ -43,8 +43,8 @@ describe "BytewiseCodec", ->
       assert.equal(encode(4294967318), 'Nf041f0000001600000')
       assert.equal(encode(-4294967318), 'Nf-be0ffffffe9fffff')
     it "should encode date type to a string", ->
-      assert.equal(encode(new Date(2014,1,1)), 'D042743e9073400000')
-      assert.equal(encode(new Date(-2014,1,1)), 'D-bd236a1e7c71ffff')
+      assert.equal(encode(new Date("2014-01-31T16:00:00.000Z")), 'D042743e9073400000')
+      assert.equal(encode(new Date("-002014-01-31T16:00:00.000Z")), 'D-bd236a1e7c71ffff')
     it "should encode string type to a string", ->
       assert.equal(encode("hi world"), '"hi world"')
       assert.equal(encode("你好"), '"你好"')
@@ -55,13 +55,13 @@ describe "BytewiseCodec", ->
     it "should encode buffer type to a string", ->
       assert.equal(encode(new Buffer([1,2,3,4,5,6,7,8])), 'B0102030405060708')
     it "should encode array type to a string", ->
-      expected = [12345, 'good:\nhi,u.', new Date(2014,1,1), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
+      expected = [12345, 'good:\nhi,u.', new Date("2014-01-31T16:00:00.000Z"), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
       assert.equal encode(expected), '[Ni000003039,"good%3a\\nhi%2cu.",D042743e9073400000,Nf03ff3c083126e978d,B0102030405060708]'
     it "should encode object type to a string", ->
       expected = 
         num:12345
         str:'good:\nhi,u.'
-        date:new Date(2014,1,1)
+        date:new Date("2014-01-31T16:00:00.000Z")
         float:1.2345
         buf:new Buffer([1,2,3,4,5,6,7,8])
       assert.equal encode(expected), '{num:Ni000003039,str:"good%3a\\nhi%2cu.",date:D042743e9073400000,float:Nf03ff3c083126e978d,buf:B0102030405060708}'
@@ -86,8 +86,8 @@ describe "BytewiseCodec", ->
       assert.equal(decode('Nf041f0000001600000'), 4294967318)
       assert.equal(decode('Nf-be0ffffffe9fffff'), -4294967318)
     it "should decode date type", ->
-      assert.deepEqual(decode('D042743e9073400000'), new Date(2014,1,1))
-      assert.deepEqual(decode('D-bd236a1e7c71ffff'), new Date(-2014,1,1))
+      assert.deepEqual(decode('D042743e9073400000'), new Date("2014-01-31T16:00:00.000Z"))
+      assert.deepEqual(decode('D-bd236a1e7c71ffff'), new Date("-002014-01-31T16:00:00.000Z"))
     it "should decode string type", ->
       assert.equal(decode('"hi world"'), "hi world")
       assert.equal(decode('"你好"'), "你好")
@@ -103,13 +103,13 @@ describe "BytewiseCodec", ->
     it "should decode buffer type ", ->
       assert.equal(decode('B0102030405060708').toString(), new Buffer([1,2,3,4,5,6,7,8]).toString())
     it "should decode array type to a string", ->
-      expected = [12345, 'good:\nhi,u.', new Date(2014,1,1), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
+      expected = [12345, 'good:\nhi,u.', new Date("2014-01-31T16:00:00.000Z"), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
       assert.deepEqual decode('[Ni000003039,"good%3a\\nhi%2cu.",D042743e9073400000,Nf03ff3c083126e978d,B0102030405060708]'), expected
     it "should decode object type", ->
       expected = 
         num:12345
         str:'good:\nhi,u.'
-        date:new Date(2014,1,1)
+        date:new Date("2014-01-31T16:00:00.000Z")
         float:1.2345
         buf:new Buffer([1,2,3,4,5,6,7,8])
       assert.deepEqual decode('{num:Ni000003039,str:"good%3a\\nhi%2cu.",date:D042743e9073400000,float:Nf03ff3c083126e978d,buf:B0102030405060708}'), expected
