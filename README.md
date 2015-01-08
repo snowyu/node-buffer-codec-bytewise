@@ -66,56 +66,47 @@ function encode(value) { return bytewise.encode(value) }
 
   // Many types can be respresented using only their type tag, a single byte
   // WARNING type tags are subject to change for the time being!
-  assert.equal(encode(null), ' ');
-  assert.equal(encode(false), 'F');
-  assert.equal(encode(true), 'T');
-  assert.equal(encode(undefined), '~');
+     assert.equal(encode(null), ' ')
+      assert.equal(encode(false), 'F')
+      assert.equal(encode(true), 'T')
+      assert.equal(encode(undefined), '~')
 
-  // Numbers are stored in 9 bytes -- 1 byte for the type tag and an 8 byte float
-  assert.equal(encode(12345, 'hex'), '4240c81c8000000000');
-  // Negative numbers are stored as positive numbers, but with a lower type tag and their bits inverted
-  assert.equal(encode(-12345, 'hex'), '41bf37e37fffffffff');
+      assert.equal(encode(-Infinity), 'N0')
+      assert.equal(encode(Infinity), 'N9')
+      # Serialization does not preserve the sign bit, so 0 is indistinguishable from -0
+      assert.equal(encode(-0), 'Ni000000000');
+      assert.equal(encode(0), 'Ni000000000');
+      # Int32 Numbers are stored in 11 bytes -- 2 chars(Ni) for the type tag and 1 char for the sign
+      # and lefts is 8 chars hex string.
+      assert.equal(encode(12345), 'Ni000003039')
+      # Int32 Negative numbers are stored as positive numbers, 
+      # but the sign tag is "-" and their bits inverted
+      assert.equal(encode(-12345), 'Ni-ffffcfc7')
+      #floating point or integer greater than MaxUInt32, are stored as IEEE 754 doubles
+      # and the sub type tag is 'f', stored in 20 bytes
+      assert.equal(encode(1.2345), 'Nf03ff3c083126e978d')
+      assert.equal(encode(-1.2345), 'Nf-c00c3f7ced916872')
 
-  // All numbers, integer or floating point, are stored as IEEE 754 doubles
-  assert.equal(encode(1.2345, 'hex'), '423ff3c083126e978d');
-  assert.equal(encode(-1.2345, 'hex'), '41c00c3f7ced916872');
-
-  // Serialization does not preserve the sign bit, so 0 is indistinguishable from -0
-  assert.equal(encode(-0, 'hex'), '420000000000000000');
-  assert.equal(encode(0, 'hex'), '420000000000000000');
-
-  // We can even serialize Infinity and -Infinity, though we just use their type tag
-  assert.equal(encode(-Infinity, 'hex'), '40');
-  assert.equal(encode(Infinity, 'hex'), '43');
-
-  // Dates are stored just like numbers, but with different (and higher) type tags
-  assert.equal(encode(new Date(-12345), 'hex'), '51bf37e37fffffffff');
-  assert.equal(encode(new Date(12345), 'hex'), '5240c81c8000000000');
-
-  // Strings are encoded as utf8, prefixed with their type tag (0x70, or the "p" character)
-  assert.equal(encode('foo'), 'pfoo');
-  assert.equal(encode('föo'), 'pfÃ¶o');
-
-  // Buffers are also left alone, other than being prefixed with their type tag (0x60)
-  assert.equal(encode(new Buffer('ff00fe01', 'hex'), 'hex'), '60ff00fe01');
-
-  // Arrays are just a series of values terminated with a null byte
-  assert.equal(encode([ true, -1.2345 ], 'hex'), 'a02141c00c3f7ced91687200');
-
-  // Strings are also legible when embedded in complex structures like arrays
-  // Items in arrays are deliminted by null bytes, and a final end byte marks the end of the array
-  assert.equal(encode([ 'foo' ]), '\xa0pfoo\x00\x00');
-
-  // The 0x01 and 0xfe bytes are used to escape high and low bytes while preserving the correct collation
-  assert.equal(encode([ new Buffer('ff00fe01', 'hex') ], 'hex'), 'a060fefe0101fefd01020000');
-
-  // Complex types like arrays can be arbitrarily nested, and fixed-sized types don't require a terminating byte
-  assert.equal(encode([ [ 'foo', true ], 'bar' ]), '\xa0\xa0\pfoo\x00\x21\x00\pbar\x00\x00');
-
-  // Objects are just string-keyed maps, stored like arrays: [ k1, v1, k2, v2, ... ]
-  assert.equal(encode({ foo: true, bar: 'baz' }), '\xb0pfoo\x00\x21\pbar\x00\pbaz\x00\x00');
+      assert.equal(encode(4294967318), 'Nf041f0000001600000')
+      assert.equal(encode(-4294967318), 'Nf-be0ffffffe9fffff')
 
 
+      assert.equal(encode(new Date(2014,1,1)), 'D042743e9073400000')
+      assert.equal(encode(new Date(-2014,1,1)), 'D-bd236a1e7c71ffff')
 
-
+      assert.equal(encode("hi world"), '"hi world"')
+      assert.equal(encode(->), 'function () {}')
+      fn = (x,y)->[x,y]
+      assert.equal(encode(fn), fn.toString())
+      assert.equal(encode(new Buffer([1,2,3,4,5,6,7,8])), 'B0102030405060708')
+      expected = [12345, 'good:\nhi,u.', new Date(2014,1,1), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
+      assert.equal(encode(expected), '[Ni000003039,"good%3a\\nhi%2cu.",D042743e9073400000,Nf03ff3c083126e978d,B0102030405060708]')
+      expected = {
+        num:12345,
+        str:'good:\nhi,u.',
+        date:new Date(2014,1,1),
+        float:1.2345,
+        buf:new Buffer([1,2,3,4,5,6,7,8])
+      }
+      assert.equal(encode(expected), '{num:Ni000003039,str:"good%3a\\nhi%2cu.",date:D042743e9073400000,float:Nf03ff3c083126e978d,buf:B0102030405060708}')
 ```
