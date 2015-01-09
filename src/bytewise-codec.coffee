@@ -12,7 +12,6 @@ isFunction  = util.isFunction
 isObject    = util.isObject
 register    = Codec.register
 aliases     = Codec.aliases
-alias       = Codec.alias
 isBuffer    = Buffer.isBuffer
 
 escapeString    = Codec.escapeString
@@ -79,15 +78,21 @@ intToHex = (num, radix=16)->if (num < 0) then (num+MaxUInt32Count).toString(radi
 
 class BytewiseCodec
   register BytewiseCodec, Codec
-  alias    BytewiseCodec, 'index'
+  aliases  BytewiseCodec, 'index'
   
   # the configration:
   # for float
-  buffer = Codec.getBuffer 8
-  decodeFunction = undefined
-  bufferEncoding = "hex"
-  integerBase    = 16
-  baseWidth      = intToHex(MaxUInt32, integerBase).length
+  getBuffer = (length, reuseable = true)->
+    if reuseable
+      Codec.getBuffer length
+    else
+      new Buffer(length)
+  buffer = getBuffer 8
+  decodeFunction  = undefined
+  bufferEncoding  = "hex"
+  integerBase     = 16
+  baseWidth       = intToHex(MaxUInt32, integerBase).length
+  ignoreCircular  = true
   
 
   ###
@@ -118,18 +123,39 @@ class BytewiseCodec
       buffer.writeDoubleBE -value, 0
       xorBuffer(buffer)
     buffer.toString(bufferEncoding, 0, 8)
+  isCircular = (->
+    visited = []
+    return (obj, clearVisited)->
+      if clearVisited is true
+        visited = []
+        visited.push obj if obj
+        result = false
+      else if obj
+        result = visited.indexOf(obj) >= 0
+        visited.push obj if not result
+      return result
+  )()
   encodeArray = (arr)->
     result = '['
     for item,i in arr
+      if isCircular item
+        if ignoreCircular
+          continue
+        else
+          throw new InvalidFormatError("Circular element found.")
       v = encode(item)
-      if i isnt 0
-        result += ','
+      result += ',' if i isnt 0
       result += v
     result += ']'
   encodeObject = (obj)->
     result = '{'
     i = 0
     for k,v of obj
+      if isCircular v
+        if ignoreCircular
+          continue
+        else
+          throw new InvalidFormatError("Circular element found.")
       v = encode(v)
       if i isnt 0
         result += ','
@@ -193,7 +219,7 @@ class BytewiseCodec
       result[key]=value
     result
   decodeBuffer = (data)->
-    buf = new Buffer data.length
+    buf = getBuffer data.length, false
     len = buf.write data, 0, bufferEncoding
     buf.slice(0, len)
   decodeNumber = (data)->
@@ -247,15 +273,21 @@ class BytewiseCodec
           data
     else
       data
-  _encodeString: encode
+  _encodeString: (data)->
+    isCircular(null, true) #clear vistied objects array.
+    encode(data)
   _decodeString: decode
   config: (conf)->
     if conf
-      decodeFunction = conf.decodeFunction
-      bufferEncoding = conf.bufferEncoding if conf.bufferEncoding
+      decodeFunction  = conf.decodeFunction
+      bufferEncoding  = conf.bufferEncoding if conf.bufferEncoding
+      ignoreCircular  = conf.ignoreCircular
+      if isFunction conf.getBuffer
+        getBuffer       = conf.getBuffer
+        buffer          = getBuffer 8
       if conf.integerBase >= 2 and conf.integerBase <= 36
-        integerBase = conf.integerBase
-        baseWidth   = intToHex(MaxUInt32, integerBase).length
+        integerBase   = conf.integerBase
+        baseWidth     = intToHex(MaxUInt32, integerBase).length
       return @
     else
       decodeFunction: decodeFunction

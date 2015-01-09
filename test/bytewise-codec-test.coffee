@@ -65,6 +65,17 @@ describe "BytewiseCodec", ->
         float:1.2345
         buf:new Buffer([1,2,3,4,5,6,7,8])
       assert.equal encode(expected), '{num:Ni000003039,str:"good%3a\\nhi%2cu.",date:D042743e9073400000,float:Nf03ff3c083126e978d,buf:B0102030405060708}'
+    it "should encode circular(object/array) when ignore circular", ->
+      b = num:12345
+      a = ['hi', b]
+      b.a = a
+      assert.equal encode(b), '{num:Ni000003039,a:["hi",{}]}'
+    it "should throw exception encode circular(object/array) when not ignore circular", ->
+      b = num:12345
+      a = ['hi', b]
+      b.a = a
+      codec.config ignoreCircular: false
+      assert.throw encode.bind(null,b), /Circular element found/
   describe ".decode", ->
     decode = codec.decode.bind(codec)
     it "should return data directly when can not decode", ->
@@ -100,8 +111,12 @@ describe "BytewiseCodec", ->
       #assert.ok isFunction(result), "should be function"
       assert.typeOf result, 'function'
       assert.equal(result.toString(), fn.toString())
-    it "should decode buffer type ", ->
-      assert.equal(decode('B0102030405060708').toString(), new Buffer([1,2,3,4,5,6,7,8]).toString())
+    describe "decode buffer", ->
+      it "should decode buffer type ", ->
+        assert.equal(decode('B0102030405060708').toString(), new Buffer([1,2,3,4,5,6,7,8]).toString())
+      it "should decode multi buffers in an array type ", ->
+        expected = [new Buffer([1,2,3,4,5,6,7,8]), new Buffer([9,0xa]), new Buffer([0xb,0xc])]
+        assert.deepEqual decode('[B0102030405060708,B090a,B0b0c]'), expected
     it "should decode array type to a string", ->
       expected = [12345, 'good:\nhi,u.', new Date("2014-01-31T16:00:00.000Z"), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
       assert.deepEqual decode('[Ni000003039,"good%3a\\nhi%2cu.",D042743e9073400000,Nf03ff3c083126e978d,B0102030405060708]'), expected
