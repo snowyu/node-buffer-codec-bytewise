@@ -41,7 +41,7 @@ This is the top level order of the various structures that may be encoded:
 * `Date`: 'D' double float.
 * `Buffer`: "B" hex String
 * `Array`: like JSON array, but the element value is bytewise serialization.
-* `Object`: like JSON array, but the element value is bytewise serialization.
+* `Object`: like JSON object, but the element value is bytewise serialization.
 * `RegExp`: "R" with stringified "/pattern/flags"
 * `Function`: "f" with stringified "function(){}"
 * `undefined`: "~"
