@@ -93,6 +93,8 @@ class BytewiseCodec
   integerBase     = 16
   baseWidth       = intToHex(MaxUInt32, integerBase).length
   ignoreCircular  = true
+  sortArray       = false
+  sortObject      = true
   
 
   ###
@@ -128,41 +130,37 @@ class BytewiseCodec
     return (obj, clearVisited)->
       if clearVisited is true
         visited = []
-        visited.push obj if obj
+        visited.push obj if isObject obj
         result = false
       else if obj
         result = visited.indexOf(obj) >= 0
-        visited.push obj if not result
+        visited.push obj if not result and isObject obj
       return result
   )()
   encodeArray = (arr)->
-    result = '['
+    result = []
     for item,i in arr
       if isCircular item
         if ignoreCircular
           continue
         else
           throw new InvalidFormatError("Circular element found.")
-      v = encode(item)
-      result += ',' if i isnt 0
-      result += v
-    result += ']'
+      result.push encode(item)
+    result = result.sort() if sortArray
+    '['+result.join(',')+']'
   encodeObject = (obj)->
-    result = '{'
-    i = 0
-    for k,v of obj
+    result = []
+    keys = Object.keys(obj)
+    keys = keys.sort() if sortObject
+    for k in keys
+      v = obj[k]
       if isCircular v
         if ignoreCircular
           continue
         else
           throw new InvalidFormatError("Circular element found.")
-      v = encode(v)
-      if i isnt 0
-        result += ','
-      else
-        i=1
-      result += escapeString(k,"%:,") + ':' + v
-    result += '}'
+      result.push escapeString(k,"%:,") + ':' + encode(v)
+    '{'+result.join(',')+'}'
 
   encode = (data)->
     return UNDEFINED if data is undefined
@@ -275,6 +273,10 @@ class BytewiseCodec
       data
   _encodeString: (data)->
     isCircular(null, true) #clear vistied objects array.
+    i = @options.sortObject
+    sortObject = if i? then i else true
+    i = @options.sortArray
+    sortArray = if i? then i else false
     encode(data)
   _decodeString: decode
   config: (conf)->

@@ -9,10 +9,19 @@ A binary string serialization which sorts bytewise for arbitrarily complex data 
 + add the integer(int32) serialization when number is integer and less than MaxUInt32.
 + RegExp serialization
 + Configuration: bytewise.config(Configuration)
-  + `decodeFunction` *(func)*: function serialization: only config the cfg.decodeFunction to decode the function:
-    * bytewise.config({decodeFunction: eval})
-  + `bufferEncoding` *(string)*: the buffer encoding, defaults to 'hex'.
-  + `integerBase` *int*: the int32 base. it's in [2,36]. defaults to 16.
+  * `decodeFunction` *(func)*: function serialization: only config the cfg.decodeFunction to decode the function:
+    * bytewise.config({decodeFunction: function(data) {return eval('('+data+')')})
+  * `bufferEncoding` *(string)*: the buffer encoding, defaults to 'hex'.
+  * `integerBase` *int*: the int32 base. it's in [2,36]. defaults to 16.
+  * `getBuffer` *(func)*: get a Buffer instance with specified byte length.
+    * function (length, reusable = true)
+      * length: the max byte length of the buffer
+      * reusable: the buffer is a temp buffer use to convert the value if true
+  * `ignoreCircular` *(bool)*: defaults to false, throws exception.
+* encode(data, options), the options:
+  * `sortObject` *{bool}*: sort by keys, defaults to true
+  * `sortArray` *(bool)*: defaults to false.
+
 
 ## Order of Supported Structures
 

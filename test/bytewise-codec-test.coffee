@@ -57,6 +57,9 @@ describe "BytewiseCodec", ->
     it "should encode array type to a string", ->
       expected = [12345, 'good:\nhi,u.', new Date("2014-01-31T16:00:00.000Z"), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
       assert.equal encode(expected), '[Ni000003039,"good%3a\\nhi%2cu.",D042743e9073400000,Nf03ff3c083126e978d,B0102030405060708]'
+    it "should encode array type with sort array", ->
+      expected = [12345, 'good:\nhi,u.', new Date("2014-01-31T16:00:00.000Z"), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
+      assert.equal encode(expected, sortArray: true), '["good%3a\\nhi%2cu.",B0102030405060708,D042743e9073400000,Nf03ff3c083126e978d,Ni000003039]'
     it "should encode object type to a string", ->
       expected = 
         num:12345
@@ -64,12 +67,21 @@ describe "BytewiseCodec", ->
         date:new Date("2014-01-31T16:00:00.000Z")
         float:1.2345
         buf:new Buffer([1,2,3,4,5,6,7,8])
-      assert.equal encode(expected), '{num:Ni000003039,str:"good%3a\\nhi%2cu.",date:D042743e9073400000,float:Nf03ff3c083126e978d,buf:B0102030405060708}'
+      assert.equal encode(expected), '{buf:B0102030405060708,date:D042743e9073400000,float:Nf03ff3c083126e978d,num:Ni000003039,str:"good%3a\\nhi%2cu."}'
+    it "should encode object type without sort keys", ->
+      expected = 
+        num:12345
+        str:'good:\nhi,u.'
+        date:new Date("2014-01-31T16:00:00.000Z")
+        float:1.2345
+        buf:new Buffer([1,2,3,4,5,6,7,8])
+      assert.equal encode(expected, {sortObject:false}), '{num:Ni000003039,str:"good%3a\\nhi%2cu.",date:D042743e9073400000,float:Nf03ff3c083126e978d,buf:B0102030405060708}'
     it "should encode circular(object/array) when ignore circular", ->
       b = num:12345
       a = ['hi', b]
       b.a = a
-      assert.equal encode(b), '{num:Ni000003039,a:["hi",{}]}'
+      codec.config ignoreCircular: true
+      assert.equal encode(b), '{a:["hi",{num:Ni000003039}],num:Ni000003039}'
     it "should throw exception encode circular(object/array) when not ignore circular", ->
       b = num:12345
       a = ['hi', b]
