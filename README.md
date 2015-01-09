@@ -23,7 +23,7 @@ A binary string serialization which sorts bytewise for arbitrarily complex data 
   * `sortArray` *(bool)*: defaults to false.
 
 
-## Order of Supported Structures
+## Supported Structures
 
 This is the top level order of the various structures that may be encoded:
 
@@ -32,20 +32,18 @@ This is the top level order of the various structures that may be encoded:
 * `true`: "T"
 * NEGATIVE_INFINITY: "0"
 * POSITIVE_INFINITY: "9"
+* `String`: JSON.stringify
 * `Number`: "N"
   * integer: "i" int32 Hex string if value less than MaxUInt32 else treat as double float.
   * double: "f"
   * negative flag: "-"
   * positive flag: "0"
-* `Date`: double float.
-  * DATE_PRE_EPOCH: '1'
-  * DATE_POST_EPOCH: '2' 
+* `Date`: 'D' double float.
 * `Buffer`: "B" hex String
-* `String`: JSON.stringify
 * `Array`: like JSON array, but the element value is bytewise serialization.
 * `Object`: like JSON array, but the element value is bytewise serialization.
 * `RegExp`: "R" with stringified "/pattern/flags"
-* `Function`: "F" with stringified "function(){}"
+* `Function`: "f" with stringified "function(){}"
 * `undefined`: "~"
 
 
