@@ -60,7 +60,7 @@ This serialization accomodates a wide range of javascript structures, but it is 
 
 The bytewise is registered to [buffer-codec](https://github.com/snowyu/node-buffer-codec).
 
-`bytewise`.`encode` serializes any supported type and returns a buffer, or throws if an unsupported structure is passed:
+`bytewise`.`encode` serializes any supported type and returns a encoded string, or throws if an unsupported structure is passed:
 
 ```js
 
@@ -98,22 +98,22 @@ function encode(value) { return bytewise.encode(value) }
       assert.equal(encode(-4294967318), 'Nf-be0ffffffe9fffff')
 
 
-      assert.equal(encode(new Date(2014,1,1)), 'D042743e9073400000')
-      assert.equal(encode(new Date(-2014,1,1)), 'D-bd236a1e7c71ffff')
+      assert.equal(encode(new Date('2014-01-31T16:00:00.000Z')), 'D042743e9073400000')
+      assert.equal(encode(new Date('-002014-01-31T16:00:00.000Z')), 'D-bd236a1e7c71ffff')
 
       assert.equal(encode("hi world"), '"hi world"')
-      assert.equal(encode(->), 'function () {}')
-      fn = (x,y)->[x,y]
+      assert.equal(encode(function () {}), 'function () {}')
+      fn = function (x,y) {return [x,y]}
       assert.equal(encode(fn), fn.toString())
       assert.equal(encode(new Buffer([1,2,3,4,5,6,7,8])), 'B0102030405060708')
-      expected = [12345, 'good:\nhi,u.', new Date(2014,1,1), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
+      expected = [12345, 'good:\nhi,u.', new Date("2014-01-31T16:00:00.000Z"), 1.2345, new Buffer([1,2,3,4,5,6,7,8])]
       assert.equal(encode(expected), '[Ni000003039,"good%3a\\nhi%2cu.",D042743e9073400000,Nf03ff3c083126e978d,B0102030405060708]')
       expected = {
         num:12345,
         str:'good:\nhi,u.',
-        date:new Date(2014,1,1),
+        date:new Date('2014-01-31T16:00:00.000Z'),
         float:1.2345,
         buf:new Buffer([1,2,3,4,5,6,7,8])
       }
-      assert.equal(encode(expected), '{num:Ni000003039,str:"good%3a\\nhi%2cu.",date:D042743e9073400000,float:Nf03ff3c083126e978d,buf:B0102030405060708}')
+      assert.equal(encode(expected), '{buf:B0102030405060708,date:D042743e9073400000,float:Nf03ff3c083126e978d,num:Ni000003039,str:"good%3a\\nhi%2cu."}')
 ```
