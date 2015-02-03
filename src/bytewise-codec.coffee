@@ -1,15 +1,14 @@
 # Reference: https://github.com/deanlandolt/bytewise
 # Differece: encode to string only.
-util        = require("abstract-object/lib/util")
 Errors      = require('abstract-object/Error')
 Codec       = module.exports = require 'buffer-codec'
-isString    = util.isString
-isNumber    = util.isNumber
-isDate      = util.isDate
-isRegExp    = util.isRegExp
-isArray     = util.isArray
-isFunction  = util.isFunction
-isObject    = util.isObject
+isString    = require("abstract-object/lib/util/isString")
+isNumber    = require("abstract-object/lib/util/isNumber")
+isDate      = require("abstract-object/lib/util/isDate")
+isRegExp    = require("abstract-object/lib/util/isRegExp")
+isArray     = require("abstract-object/lib/util/isArray")
+isFunction  = require("abstract-object/lib/util/isFunction")
+isObject    = require("abstract-object/lib/util/isObject")
 register    = Codec.register
 aliases     = Codec.aliases
 isBuffer    = Buffer.isBuffer
