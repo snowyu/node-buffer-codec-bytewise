@@ -15,6 +15,9 @@
   "scripts": {
     "test": "grunt test"
   },
+  "pre-commit": [
+    "test"
+  ],
   "dependencies": {
     "abstract-object": "~1.8.1",
     "buffer-codec": "~1.6.0"
@@ -34,6 +37,7 @@
     "grunt-release": "*",
     "grunt-saucelabs": "*",
     "mocha": "~2.0.1",
+    "pre-commit": "~1.0.2",
     "sinon": "~1.12.2",
     "sinon-chai": "~2.6.0",
     "source-map-support": "*"
