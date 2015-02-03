@@ -1,6 +1,6 @@
 {
   "name": "buffer-codec-bytewise",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "String serialization of arbitrarily complex structures that sort bytewise.",
   "homepage": "https://github.com/snowyu/node-buffer-codec-bytewise",
   "main": "./index",
