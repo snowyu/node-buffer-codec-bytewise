@@ -1,6 +1,6 @@
 {
   "name": "buffer-codec-bytewise",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "String serialization of arbitrarily complex structures that sort bytewise.",
   "homepage": "https://github.com/snowyu/node-buffer-codec-bytewise",
   "main": "./index",
@@ -19,8 +19,10 @@
     "test"
   ],
   "dependencies": {
-    "abstract-object": "~1.8.1",
-    "buffer-codec": "~1.6.0"
+    "abstract-error": "~1.0.1",
+    "abstract-object": "~2.1.5",
+    "buffer-codec": "~1.6.2",
+    "inherits-ex": "~1.0.6"
   },
   "devDependencies": {
     "chai": "~1.10.0",
