@@ -13,7 +13,8 @@
     "lib"
   ],
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "test-cov": "mocha --reporter dot && istanbul report text-summary lcovonly"
   },
   "pre-commit": [
     "test"
@@ -26,7 +27,7 @@
   },
   "devDependencies": {
     "chai": "~1.10.0",
-    "connect-livereload": "*",
+    "coffee-coverage": "^0.6.3",
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-coffee": "*",
@@ -38,6 +39,7 @@
     "grunt-newer": "*",
     "grunt-release": "*",
     "grunt-saucelabs": "*",
+    "istanbul": "^0.3.20",
     "mocha": "~2.0.1",
     "pre-commit": "~1.0.2",
     "sinon": "~1.12.2",

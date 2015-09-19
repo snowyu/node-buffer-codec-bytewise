@@ -1,4 +1,21 @@
-# Bytewise Codec [![Build Status](https://img.shields.io/travis/snowyu/node-buffer-codec-bytewise/master.png)](http://travis-ci.org/snowyu/node-buffer-codec-bytewise) [![npm](https://img.shields.io/npm/v/buffer-codec-bytewise.svg)](https://npmjs.org/package/buffer-codec-bytewise) [![downloads](https://img.shields.io/npm/dm/buffer-codec-bytewise.svg)](https://npmjs.org/package/buffer-codec-bytewise) [![license](https://img.shields.io/npm/l/buffer-codec-bytewise.svg)](https://npmjs.org/package/buffer-codec-bytewise) 
+# Bytewise Codec  [![npm][npm-svg]][npm]
+
+[![Build Status][travis-svg]][travis]
+[![Code Climate][codeclimate-svg]][codeclimate]
+[![Test Coverage][codeclimate-test-svg]][codeclimate-test]
+[![downloads][npm-download-svg]][npm]
+[![license][npm-license-svg]][npm]
+
+[npm]: https://npmjs.org/package/codec-bytewise
+[npm-svg]: https://img.shields.io/npm/v/codec-bytewise.svg
+[npm-download-svg]: https://img.shields.io/npm/dm/codec-bytewise.svg
+[npm-license-svg]: https://img.shields.io/npm/l/codec-bytewise.svg
+[travis-svg]: https://img.shields.io/travis/snowyu/node-buffer-codec-bytewise/master.svg
+[travis]: http://travis-ci.org/snowyu/node-buffer-codec-bytewise
+[codeclimate-svg]: https://codeclimate.com/github/snowyu/node-buffer-codec-bytewise/badges/gpa.svg
+[codeclimate]: https://codeclimate.com/github/snowyu/node-buffer-codec-bytewise
+[codeclimate-test-svg]: https://codeclimate.com/github/snowyu/node-buffer-codec-bytewise/badges/coverage.svg
+[codeclimate-test]: https://codeclimate.com/github/snowyu/node-buffer-codec-bytewise/coverage
 
 
 A binary string serialization which sorts bytewise for arbitrarily complex data structures, respecting [bytewise](https://github.com/deanlandolt/bytewise) structured sorting efficiently.
@@ -86,7 +103,7 @@ function encode(value) { return bytewise.encode(value) }
       # Int32 Numbers are stored in 11 bytes -- 2 chars(Ni) for the type tag and 1 char for the sign
       # and lefts is 8 chars hex string.
       assert.equal(encode(12345), 'Ni000003039')
-      # Int32 Negative numbers are stored as positive numbers, 
+      # Int32 Negative numbers are stored as positive numbers,
       # but the sign tag is "-" and their bits inverted
       assert.equal(encode(-12345), 'Ni-ffffcfc7')
       #floating point or integer greater than MaxUInt32, are stored as IEEE 754 doubles
