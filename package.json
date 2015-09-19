@@ -20,9 +20,9 @@
   ],
   "dependencies": {
     "abstract-error": "~1.0.2",
-    "abstract-object": "~2.1.7",
-    "buffer-codec": "~1.6.3",
-    "inherits-ex": "~1.1.2"
+    "abstract-object": "~2.1.9",
+    "buffer-codec": "~1.6.4",
+    "inherits-ex": "~1.1.4"
   },
   "devDependencies": {
     "chai": "~1.10.0",
