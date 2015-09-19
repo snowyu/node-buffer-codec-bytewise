@@ -6,10 +6,10 @@
 [![downloads][npm-download-svg]][npm]
 [![license][npm-license-svg]][npm]
 
-[npm]: https://npmjs.org/package/codec-bytewise
-[npm-svg]: https://img.shields.io/npm/v/codec-bytewise.svg
-[npm-download-svg]: https://img.shields.io/npm/dm/codec-bytewise.svg
-[npm-license-svg]: https://img.shields.io/npm/l/codec-bytewise.svg
+[npm]: https://npmjs.org/package/buffer-codec-bytewise
+[npm-svg]: https://img.shields.io/npm/v/buffer-codec-bytewise.svg
+[npm-download-svg]: https://img.shields.io/npm/dm/buffer-codec-bytewise.svg
+[npm-license-svg]: https://img.shields.io/npm/l/buffer-codec-bytewise.svg
 [travis-svg]: https://img.shields.io/travis/snowyu/node-buffer-codec-bytewise/master.svg
 [travis]: http://travis-ci.org/snowyu/node-buffer-codec-bytewise
 [codeclimate-svg]: https://codeclimate.com/github/snowyu/node-buffer-codec-bytewise/badges/gpa.svg
