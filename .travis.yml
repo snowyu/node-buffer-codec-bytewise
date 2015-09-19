@@ -1,4 +1,3 @@
-sudo: false
 language: node_js
 node_js:
   - "0.10"
@@ -14,7 +13,14 @@ before_install:
   - npm install -g grunt-cli
   - npm install coffee-script
 before_script: grunt build
+script: npm run-script test-cov
+after_success:
+  - test -e ./coverage/lcov.info && npm install codeclimate-test-reporter && codeclimate-test-reporter
+    < ./coverage/lcov.info
 notifications:
   email:
     - snowyu.lee@gmail.com
-
+addons:
+  code_climate:
+    repo_token:
+      secure: "TJKz83LgXCIzE2CHnAbSu2DwhbUsH/TdKpdf7VIhBfcrQZ0yhCgewd+4QKi3u7ukX524nsiGcVIsGF3xGqz8PPVYEjI21pvgcQ20bWxGtMmiJDng0xsyUuTdaVD9AN/pw39CHJl+6A4VCWDrjYuaWiTBez3FvuhLF/b56a4pRJ8="
